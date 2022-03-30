@@ -44,6 +44,8 @@ abstract class Question with _$Question {
       _$QuestionFromJson(json);
 }
 
+const pageSize = 5;
+
 final client = Provider((ref) => Dio());
 
 final _fetchedPages = StateProvider((ref) => <int>[]);
@@ -67,7 +69,7 @@ final paginatedQuestionsProvider = FutureProvider.autoDispose
       'site': 'stackoverflow',
       'filter': '!17vW1m9jnXcpKOO(p4a5Jj.QeqRQmvxcbquXIXJ1fJcKq4',
       'tagged': 'flutter',
-      'pagesize': '50',
+      'pagesize': '$pageSize',
       'page': '${pageIndex + 1}',
     },
   );
@@ -144,8 +146,9 @@ class MyHomePage extends HookConsumerWidget {
                     overrides: [
                       currentQuestion.overrideWithValue(
                         ref
-                            .watch(paginatedQuestionsProvider(index ~/ 50))
-                            .whenData((page) => page.items[index % 50]),
+                            .watch(
+                                paginatedQuestionsProvider(index ~/ pageSize))
+                            .whenData((page) => page.items[index % pageSize]),
                       ),
                     ],
                     child: const QuestionItem(),
